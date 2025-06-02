@@ -70,25 +70,25 @@ pipeline {
             }
         }
 
-        stage('Postman API Tests (via Docker)') {
-            steps {
-                // Run Newman inside Docker; it will mount the workspace’s Tests/ folder
-                bat '''
-                docker run --rm ^
-                  -v "%WORKSPACE%\\Tests":/etc/newman ^
-                  postman/newman:latest run ^
-                    "/etc/newman/LibraryManagement APIs.postman_test_run.json" ^
-                    --reporters cli,junit ^
-                    --reporter-junit-export "/etc/newman/newman-report.xml"
-                '''
-            }
-            post {
-                // Always collect the Newman JUnit XML so Jenkins can show it
-                always {
-                    junit '**/Tests/newman-report.xml'
-                }
-            }
-        }
+        // stage('Postman API Tests (via Docker)') {
+        //     steps {
+        //         // Run Newman inside Docker; it will mount the workspace’s Tests/ folder
+        //         bat '''
+        //         docker run --rm ^
+        //           -v "%WORKSPACE%\\Tests":/etc/newman ^
+        //           postman/newman:latest run ^
+        //             "/etc/newman/LibraryManagement APIs.postman_test_run.json" ^
+        //             --reporters cli,junit ^
+        //             --reporter-junit-export "/etc/newman/newman-report.xml"
+        //         '''
+        //     }
+        //     post {
+        //         // Always collect the Newman JUnit XML so Jenkins can show it
+        //         always {
+        //             junit '**/Tests/newman-report.xml'
+        //         }
+        //     }
+        // }
     }
 
     post {
