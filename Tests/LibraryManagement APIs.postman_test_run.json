@@ -1,462 +1,721 @@
 {
-	"id": "52172f16-9918-43d9-b5d8-15f7bbc40dc2",
-	"name": "LibraryManagement APIs",
-	"timestamp": "2025-05-28T21:30:45.308Z",
-	"collection_id": "45337191-48b23188-c516-45a4-963a-3cc045c8ab4b",
-	"folder_id": 0,
-	"environment_id": "45337191-74033458-deb2-4bd0-abc6-d3ace56749a7",
-	"totalPass": 15,
-	"delay": 0,
-	"persist": true,
-	"status": "finished",
-	"startedAt": "2025-05-28T21:30:43.304Z",
-	"totalFail": 0,
-	"results": [
+	"info": {
+		"_postman_id": "48b23188-c516-45a4-963a-3cc045c8ab4b",
+		"name": "LibraryManagement APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45337191",
+		"_collection_link": "https://aliimran-7059128.postman.co/workspace/Ali-Imran's-Workspace~a559aab4-ae7c-4721-876b-c684d2998a2a/collection/45337191-48b23188-c516-45a4-963a-3cc045c8ab4b?action=share&source=collection_link&creator=45337191"
+	},
+	"item": [
 		{
-			"id": "d9c3fbdc-4118-439d-af8b-b2674119e193",
-			"name": "Get All Users",
-			"url": "https://localhost:7175/api/users",
-			"time": 23,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status is 200": true,
-				"Body is array": true
-			},
-			"testPassFailCounts": {
-				"Status is 200": {
-					"pass": 1,
-					"fail": 0
+			"name": "UserService",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Body is array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "\n\n",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{userBaseUrl}}/api/users",
+							"host": [
+								"{{userBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
 				},
-				"Body is array": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				23
-			],
-			"allTests": [
 				{
-					"Status is 200": true,
-					"Body is array": true
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 201\", () => pm.response.to.have.status(201));\r",
+									"const u = pm.response.json();\r",
+									"pm.environment.set(\"userId\", u.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"alice\",\r\n  \"email\": \"alice@example.com\",\r\n  \"passwordHash\": \"P@ssw0rd!\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{userBaseUrl}}/api/users",
+							"host": [
+								"{{userBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{userBaseUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{userBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 204\", () => pm.response.to.have.status(204));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{userId}},\r\n  \"username\": \"alice2\",\r\n  \"email\": \"alice2@example.com\",\r\n  \"passwordHash\": \"NewP@ss!\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{userBaseUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{userBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 204\", () => pm.response.to.have.status(204));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{userBaseUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{userBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login succeeded\", () => pm.response.to.have.status(200));\r",
+									"const json = pm.response.json();\r",
+									"pm.environment.set(\"jwtToken\", json.token);\r",
+									"pm.test(\"Token is set\", () => pm.expect(pm.environment.get(\"jwtToken\")).to.be.a(\"string\"));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"syed.ali.imran2005@gmail.com\",\r\n    \"password\": \"03022344211\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7175/api/users/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7175",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"id": "56fa4cbd-4dfa-410a-95b2-8958cc3378a8",
-			"name": "Create User",
-			"url": "https://localhost:7175/api/users",
-			"time": 10,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"Status is 201": true
-			},
-			"testPassFailCounts": {
-				"Status is 201": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				10
-			],
-			"allTests": [
+			"name": "AuthorService",
+			"item": [
 				{
-					"Status is 201": true
+					"name": "Get All Authors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 OK\", () => pm.response.to.have.status(200));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{authorBaseUrl}}/api/authors",
+							"host": [
+								"{{authorBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"201 Created\", () => pm.response.to.have.status(201));\r",
+									"const a = pm.response.json();\r",
+									"pm.environment.set(\"authorId\", a.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"name\": \"J. K. Rowling\" }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authorBaseUrl}}/api/authors",
+							"host": [
+								"{{authorBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 OK\", () => pm.response.to.have.status(200));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"id\": {{authorId}}, \"name\": \"Rowling\" }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authorBaseUrl}}/api/authors/{{authorId}}",
+							"host": [
+								"{{authorBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"authors",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"204 No Content\", () => pm.response.to.have.status(204));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{authorBaseUrl}}/api/authors/{{authorId}}",
+							"host": [
+								"{{authorBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"authors",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"id": "a0442ba5-a899-42f5-af91-289480a4e86f",
-			"name": "Get User By Id",
-			"url": "https://localhost:7175/api/users/12",
-			"time": 10,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"Status is 200": true
-			},
-			"testPassFailCounts": {
-				"Status is 200": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				10
-			],
-			"allTests": [
+			"name": "BookService",
+			"item": [
 				{
-					"Status is 200": true
-				}
-			]
-		},
-		{
-			"id": "1825b7b7-a826-44d9-b513-9399c5352e0b",
-			"name": "Update User",
-			"url": "https://localhost:7175/api/users/12",
-			"time": 9,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"Status is 204": true
-			},
-			"testPassFailCounts": {
-				"Status is 204": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				9
-			],
-			"allTests": [
+					"name": "Get All Books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 OK\", () => pm.response.to.have.status(200));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bookBaseUrl}}/api/books",
+							"host": [
+								"{{bookBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"Status is 204": true
-				}
-			]
-		},
-		{
-			"id": "aaf7e2dd-0dd5-4628-937f-a114808b2079",
-			"name": "Delete User",
-			"url": "https://localhost:7175/api/users/12",
-			"time": 53,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"Status is 204": true
-			},
-			"testPassFailCounts": {
-				"Status is 204": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				53
-			],
-			"allTests": [
+					"name": "Create Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"201 Created\", () => pm.response.to.have.status(201));\r",
+									"const b = pm.response.json();\r",
+									"pm.environment.set(\"bookId\", b.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"HP and the Philosopher’s Stone\",\r\n  \"isbn\": \"9780747532699\",\r\n  \"authorId\": {{authorId}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bookBaseUrl}}/api/books",
+							"host": [
+								"{{bookBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"Status is 204": true
-				}
-			]
-		},
-		{
-			"id": "b551b43a-b538-4a1e-9f7e-4b058f36dbc3",
-			"name": "Get All Authors",
-			"url": "https://localhost:7183/api/authors",
-			"time": 22,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"200 OK": true
-			},
-			"testPassFailCounts": {
-				"200 OK": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				22
-			],
-			"allTests": [
+					"name": "Get Book By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 OK\", () => pm.response.to.have.status(200));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bookBaseUrl}}/api/books/{{bookId}}",
+							"host": [
+								"{{bookBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"200 OK": true
-				}
-			]
-		},
-		{
-			"id": "245332f7-9f96-4dbb-841c-3ca79a9edc09",
-			"name": "Create Author",
-			"url": "https://localhost:7183/api/authors",
-			"time": 9,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"201 Created": true
-			},
-			"testPassFailCounts": {
-				"201 Created": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				9
-			],
-			"allTests": [
+					"name": "Update Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"204 No Content\", () => pm.response.to.have.status(204));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{bookId}},\r\n  \"title\": \"HP Philosopher’s Stone\",\r\n  \"isbn\": \"9780747532699\",\r\n  \"authorId\": {{authorId}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bookBaseUrl}}/api/books/{{bookId}}",
+							"host": [
+								"{{bookBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"201 Created": true
-				}
-			]
-		},
-		{
-			"id": "a546c5e0-9a38-4900-b438-ca5eab846d44",
-			"name": "Get Author By Id",
-			"url": "https://localhost:7183/api/authors/8",
-			"time": 8,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"200 OK": true
-			},
-			"testPassFailCounts": {
-				"200 OK": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"200 OK": true
-				}
-			]
-		},
-		{
-			"id": "d890938c-0da0-48b1-a1f9-acc9919e6efa",
-			"name": "Delete Author",
-			"url": "https://localhost:7183/api/authors/8",
-			"time": 18,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"204 No Content": true
-			},
-			"testPassFailCounts": {
-				"204 No Content": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				18
-			],
-			"allTests": [
-				{
-					"204 No Content": true
-				}
-			]
-		},
-		{
-			"id": "8828c321-37d9-407f-a727-76580d7b8679",
-			"name": "Get All Books",
-			"url": "https://localhost:7265/api/books",
-			"time": 8,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"200 OK": true
-			},
-			"testPassFailCounts": {
-				"200 OK": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"200 OK": true
-				}
-			]
-		},
-		{
-			"id": "3575f4e8-eb5c-4869-ac41-8e428b733e47",
-			"name": "Create Book",
-			"url": "https://localhost:7265/api/books",
-			"time": 9,
-			"responseCode": {
-				"code": 201,
-				"name": "Created"
-			},
-			"tests": {
-				"201 Created": true
-			},
-			"testPassFailCounts": {
-				"201 Created": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				9
-			],
-			"allTests": [
-				{
-					"201 Created": true
-				}
-			]
-		},
-		{
-			"id": "b2656ee4-6bb5-4027-9875-af18080ff954",
-			"name": "Get Book By Id",
-			"url": "https://localhost:7265/api/books/6",
-			"time": 7,
-			"responseCode": {
-				"code": 200,
-				"name": "OK"
-			},
-			"tests": {
-				"200 OK": true
-			},
-			"testPassFailCounts": {
-				"200 OK": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				7
-			],
-			"allTests": [
-				{
-					"200 OK": true
-				}
-			]
-		},
-		{
-			"id": "29be4d55-a3c2-40d0-b149-7f877e4990ff",
-			"name": "Update Book",
-			"url": "https://localhost:7265/api/books/6",
-			"time": 8,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"204 No Content": true
-			},
-			"testPassFailCounts": {
-				"204 No Content": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				8
-			],
-			"allTests": [
-				{
-					"204 No Content": true
-				}
-			]
-		},
-		{
-			"id": "9925136d-d758-4ebe-9fd4-6867ceedf5d9",
-			"name": "Delete Book",
-			"url": "https://localhost:7265/api/books/6",
-			"time": 12,
-			"responseCode": {
-				"code": 204,
-				"name": "No Content"
-			},
-			"tests": {
-				"204 No Content": true
-			},
-			"testPassFailCounts": {
-				"204 No Content": {
-					"pass": 1,
-					"fail": 0
-				}
-			},
-			"times": [
-				12
-			],
-			"allTests": [
-				{
-					"204 No Content": true
+					"name": "Delete Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"204 No Content\", () => pm.response.to.have.status(204));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{bookBaseUrl}}/api/books/{{bookId}}",
+							"host": [
+								"{{bookBaseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
 	],
-	"count": 1,
-	"totalTime": 206,
-	"collection": {
-		"requests": [
+	"auth": {
+		"type": "bearer",
+		"bearer": [
 			{
-				"id": "d9c3fbdc-4118-439d-af8b-b2674119e193",
-				"method": "GET"
-			},
-			{
-				"id": "56fa4cbd-4dfa-410a-95b2-8958cc3378a8",
-				"method": "POST"
-			},
-			{
-				"id": "a0442ba5-a899-42f5-af91-289480a4e86f",
-				"method": "GET"
-			},
-			{
-				"id": "1825b7b7-a826-44d9-b513-9399c5352e0b",
-				"method": "PUT"
-			},
-			{
-				"id": "aaf7e2dd-0dd5-4628-937f-a114808b2079",
-				"method": "DELETE"
-			},
-			{
-				"id": "b551b43a-b538-4a1e-9f7e-4b058f36dbc3",
-				"method": "GET"
-			},
-			{
-				"id": "245332f7-9f96-4dbb-841c-3ca79a9edc09",
-				"method": "POST"
-			},
-			{
-				"id": "a546c5e0-9a38-4900-b438-ca5eab846d44",
-				"method": "GET"
-			},
-			{
-				"id": "d890938c-0da0-48b1-a1f9-acc9919e6efa",
-				"method": "DELETE"
-			},
-			{
-				"id": "8828c321-37d9-407f-a727-76580d7b8679",
-				"method": "GET"
-			},
-			{
-				"id": "3575f4e8-eb5c-4869-ac41-8e428b733e47",
-				"method": "POST"
-			},
-			{
-				"id": "b2656ee4-6bb5-4027-9875-af18080ff954",
-				"method": "GET"
-			},
-			{
-				"id": "29be4d55-a3c2-40d0-b149-7f877e4990ff",
-				"method": "PUT"
-			},
-			{
-				"id": "9925136d-d758-4ebe-9fd4-6867ceedf5d9",
-				"method": "DELETE"
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
 			}
 		]
-	}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
 }
