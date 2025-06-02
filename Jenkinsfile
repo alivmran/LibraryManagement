@@ -14,7 +14,7 @@ pipeline {
         FRONTEND_PROJ  = 'FrontEnd/FrontEnd/FrontEnd.csproj'
 
         // Path to your Postman collection (adjust if your path differs)
-        POSTMAN_COLL   = 'Tests/Postman/LibraryManagement APIs.postman_test_run.json'
+        POSTMAN_COLL   = 'Tests/LibraryManagement APIs.postman_test_run.json'
     }
 
     stages {
