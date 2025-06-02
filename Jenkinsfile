@@ -1,20 +1,15 @@
-// File: G:\LibraryManagement\Jenkinsfile
-
 pipeline {
     agent any
 
     environment {
-        // Build configuration
         CONFIGURATION = 'Release'
+        USER_PROJ     = 'Services/UserServices/UserServices/UserServices.csproj'
+        AUTHOR_PROJ   = 'Services/AuthorService/AuthorService.csproj'
+        BOOK_PROJ     = 'Services/BookService/BookService.csproj'
+        FRONTEND_PROJ = 'FrontEnd/FrontEnd/FrontEnd.csproj'
 
-        // Paths to each microservice project (use .csproj for publishing)
-        USER_PROJ      = 'Services/UserServices/UserServices/UserServices.csproj'
-        AUTHOR_PROJ    = 'Services/AuthorService/AuthorService.csproj'
-        BOOK_PROJ      = 'Services/BookService/BookService.csproj'
-        FRONTEND_PROJ  = 'FrontEnd/FrontEnd/FrontEnd.csproj'
-
-        // Path to your Postman collection (adjust if your path differs)
-        POSTMAN_COLL   = 'Tests/LibraryManagement APIs.postman_test_run.json'
+        // We’ll correct this below. For now, keep as you know it:
+        POSTMAN_COLL  = 'Tests/LibraryManagement APIs.postman_test_run.json'
     }
 
     stages {
@@ -29,9 +24,15 @@ pipeline {
             }
         }
 
+        // ← Temporary: List every file Jenkins pulled down
+        stage('Inspect Workspace') {
+            steps {
+                bat 'dir /s /b'
+            }
+        }
+
         stage('Restore All Projects') {
             steps {
-                // Restore each .csproj individually
                 bat "dotnet restore \"${env.USER_PROJ}\""
                 bat "dotnet restore \"${env.AUTHOR_PROJ}\""
                 bat "dotnet restore \"${env.BOOK_PROJ}\""
@@ -41,7 +42,6 @@ pipeline {
 
         stage('Build All Projects') {
             steps {
-                // Build each project (no-restore since we already restored)
                 bat "dotnet build \"${env.USER_PROJ}\" -c ${env.CONFIGURATION} --no-restore"
                 bat "dotnet build \"${env.AUTHOR_PROJ}\" -c ${env.CONFIGURATION} --no-restore"
                 bat "dotnet build \"${env.BOOK_PROJ}\" -c ${env.CONFIGURATION} --no-restore"
@@ -51,19 +51,10 @@ pipeline {
 
         stage('Publish Services & FrontEnd') {
             steps {
-                // Make sure the publish folder exists
                 bat 'if not exist publish mkdir publish'
-
-                // Publish UserService into its own folder
                 bat "dotnet publish \"${env.USER_PROJ}\" -c ${env.CONFIGURATION} -o publish/UserService --no-build"
-
-                // Publish AuthorService into its own folder
                 bat "dotnet publish \"${env.AUTHOR_PROJ}\" -c ${env.CONFIGURATION} -o publish/AuthorService --no-build"
-
-                // Publish BookService into its own folder
                 bat "dotnet publish \"${env.BOOK_PROJ}\" -c ${env.CONFIGURATION} -o publish/BookService --no-build"
-
-                // Publish FrontEnd into its own folder
                 bat "dotnet publish \"${env.FRONTEND_PROJ}\" -c ${env.CONFIGURATION} -o publish/FrontEnd --no-build"
             }
         }
@@ -71,15 +62,12 @@ pipeline {
         stage('Postman API Tests (via Docker)') {
             steps {
                 script {
-                    // If your microservices are not already running, you can start them here:
-                    // (Uncomment and adjust ports/paths if needed)
-                    //
-                    // bat "start cmd /c dotnet run --project \"Services/UserServices/UserServices/UserServices.csproj\" --urls=https://localhost:7175"
-                    // bat "start cmd /c dotnet run --project \"Services/AuthorService/AuthorService.csproj\" --urls=https://localhost:7183"
-                    // bat "start cmd /c dotnet run --project \"Services/BookService/BookService.csproj\" --urls=https://localhost:7265"
+                    // If your services must be started, uncomment these:
+                    // bat "start cmd /c dotnet run --project \"${env.USER_PROJ}\" --urls=https://localhost:7175"
+                    // bat "start cmd /c dotnet run --project \"${env.AUTHOR_PROJ}\" --urls=https://localhost:7183"
+                    // bat "start cmd /c dotnet run --project \"${env.BOOK_PROJ}\" --urls=https://localhost:7265"
                     // bat "timeout /t 5 /nobreak"
 
-                    // Run the Postman collection in Dockerized Newman:
                     bat """
                       docker run --rm ^
                         -v \"%cd%:/etc/newman\" ^
@@ -92,7 +80,6 @@ pipeline {
             }
             post {
                 always {
-                    // Publish the JUnit‐style test report
                     junit 'newman-report.xml'
                 }
             }
