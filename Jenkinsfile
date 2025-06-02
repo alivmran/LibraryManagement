@@ -4,23 +4,26 @@ pipeline {
     agent any
 
     environment {
-        // Paths to each service’s solution or project
-        USER_SOL    = 'Services/UserServices/UserServices.sln'
-        AUTHOR_PROJ = 'Services/AuthorService/AuthorService.csproj'
-        BOOK_PROJ   = 'Services/BookService/BookService.csproj'
-        // FrontEnd is located under FrontEnd/FrontEnd, so we point there:
+        // Paths to each microservice and frontend project/solution
+        USER_SOL      = 'Services/UserServices/UserServices.sln'
+        AUTHOR_PROJ   = 'Services/AuthorService/AuthorService.csproj'
+        BOOK_PROJ     = 'Services/BookService/BookService.csproj'
         FRONTEND_PROJ = 'FrontEnd/FrontEnd/FrontEnd.csproj'
         CONFIGURATION = 'Release'
+
+        // Path to your Postman collection (note the space in the filename)
+        POSTMAN_COLL  = 'Tests/Postman/LibraryManagement APIs.postman_test_run.json'
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // Pull from GitHub (main branch)
                 checkout([$class: 'GitSCM',
-                  branches: [[name: '*/main']],
-                  userRemoteConfigs: [[
-                    url: 'https://github.com/alivmran/LibraryManagement.git'
-                  ]]
+                          branches: [[name: '*/main']],
+                          userRemoteConfigs: [[
+                              url: 'https://github.com/alivmran/LibraryManagement.git'
+                          ]]
                 ])
             }
         }
@@ -73,19 +76,11 @@ pipeline {
             }
         }
 
-        stage('Test UserService') {
-            steps {
-                bat "dotnet test \"${env.USER_SOL}\" -c ${env.CONFIGURATION} --no-build --logger trx"
-            }
-            post {
-                always {
-                    junit 'Services/UserServices/TestResults/*.trx'
-                }
-            }
-        }
+        // (Optional) Insert any unit‐test stages here if you have them.
 
         stage('Publish Services & FrontEnd') {
             steps {
+                // Ensure 'publish' directory exists
                 bat 'if not exist publish mkdir publish'
 
                 // Publish UserService
@@ -97,24 +92,56 @@ pipeline {
                 // Publish BookService
                 bat "dotnet publish \"${env.BOOK_PROJ}\" -c ${env.CONFIGURATION} -o publish/BookService --no-build"
 
-                // Publish FrontEnd (note the extra /FrontEnd/ in the path)
+                // Publish FrontEnd
                 bat "dotnet publish \"${env.FRONTEND_PROJ}\" -c ${env.CONFIGURATION} -o publish/FrontEnd --no-build"
+            }
+        }
+
+        stage('Postman API Tests (via Docker)') {
+            steps {
+                script {
+                    // If your services are not already running on localhost, you can start them here:
+                    //
+                    // bat "start cmd /c dotnet run --project \"Services/UserServices/UserServices.csproj\" --urls=https://localhost:7175"
+                    // bat "start cmd /c dotnet run --project \"Services/AuthorService/AuthorService.csproj\" --urls=https://localhost:7183"
+                    // bat "start cmd /c dotnet run --project \"Services/BookService/BookService.csproj\" --urls=https://localhost:7265"
+                    // 
+                    // Wait a few seconds for services to start up:
+                    // bat "timeout /t 5 /nobreak"
+
+                    // Run Newman inside Docker, mounting the workspace to /etc/newman
+                    bat """
+                      docker run --rm ^
+                        -v \"%cd%:/etc/newman\" ^
+                        postman/newman:latest run ^
+                          \"/etc/newman/${POSTMAN_COLL}\" ^
+                          --reporters cli,junit ^
+                          --reporter-junit-export \"/etc/newman/newman-report.xml\"
+                    """
+                }
+            }
+            post {
+                always {
+                    // Publish the JUnit XML so Jenkins can display test results
+                    junit 'newman-report.xml'
+                }
             }
         }
     }
 
     post {
         always {
+            // Archive the compiled/published outputs for download
             archiveArtifacts artifacts: 'publish/**/*', fingerprint: true
         }
         success {
-            echo 'Build + Publish succeeded 🎉'
+            echo '✅ Build, Publish, and API tests all passed!'
         }
         unstable {
-            echo 'Build succeeded with test failures (unstable) ⚠️'
+            echo '⚠️ Build succeeded but some API tests failed.'
         }
         failure {
-            echo 'Build failed 💥'
+            echo '🚨 Build or API tests failed.'
         }
     }
 }
