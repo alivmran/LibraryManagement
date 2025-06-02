@@ -21,7 +21,7 @@ pipeline {
         checkout([
           $class: 'GitSCM',
           branches: [[name: '*/main']],
-          userRemoteConfigs: [[url: 'https://github.com/your-org/LibraryManagement.git']]
+          userRemoteConfigs: [[url: 'https://github.com/alivmran/LibraryManagement.git']]
         ])
       }
     }
