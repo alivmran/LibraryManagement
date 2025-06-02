@@ -3,75 +3,136 @@
 pipeline {
     agent any
 
-    // Pin to your solution name & Release configuration
     environment {
-        SOLUTION = 'LibraryManagement.sln'
+        // We no longer have a single top‐level solution.
+        // Instead, we will restore/build each service individually:
+        USER_SOL = 'Services/UserServices/UserServices.sln'      // Adjust if your file is named differently
+        AUTHOR_PROJ = 'Services/AuthorService/AuthorService.csproj'
+        BOOK_PROJ = 'Services/BookService/BookService.csproj'
+        FRONTEND_PROJ = 'FrontEnd/FrontEnd.csproj'
         CONFIGURATION = 'Release'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout from GitHub repository (main branch)
+                // Pull from Git (main branch)
                 checkout([$class: 'GitSCM',
-                  branches: [[name: '*/main']],
-                  userRemoteConfigs: [[
-                    url: 'https://github.com/alivmran/LibraryManagement.git'
-                  ]]
+                          branches: [[name: '*/main']],
+                          userRemoteConfigs: [[
+                            url: 'https://github.com/alivmran/LibraryManagement.git'
+                          ]]
                 ])
             }
         }
 
-        stage('Restore') {
+        stage('Restore UserService') {
             steps {
                 script {
-                    // Ensure we are in the workspace root (where global.json lives)
-                    bat "dotnet restore \"${env.SOLUTION}\""
+                    bat "dotnet restore \"${env.USER_SOL}\""
                 }
             }
         }
 
-        stage('Build') {
+        stage('Restore AuthorService') {
             steps {
                 script {
-                    // Build solution in Release, no restore (already done)
-                    bat "dotnet build \"${env.SOLUTION}\" -c ${env.CONFIGURATION} --no-restore"
+                    // If AuthorService has a .sln, replace AUTHOR_PROJ with that .sln path:
+                    // bat "dotnet restore \"Services/AuthorService/AuthorService.sln\"
+
+                    // Otherwise, restore the .csproj directly:
+                    bat "dotnet restore \"${env.AUTHOR_PROJ}\""
                 }
             }
         }
 
-        stage('Test') {
+        stage('Restore BookService') {
             steps {
                 script {
-                    // If you have test projects, run them. Otherwise comment this out.
-                    bat "dotnet test \"${env.SOLUTION}\" -c ${env.CONFIGURATION} --no-build --logger trx"
+                    // If BookService has a .sln, change BOOK_PROJ accordingly:
+                    // bat "dotnet restore \"Services/BookService/BookService.sln\"
+
+                    // Otherwise, restore its .csproj:
+                    bat "dotnet restore \"${env.BOOK_PROJ}\""
+                }
+            }
+        }
+
+        stage('Restore FrontEnd') {
+            steps {
+                script {
+                    bat "dotnet restore \"${env.FRONTEND_PROJ}\""
+                }
+            }
+        }
+
+        stage('Build UserService') {
+            steps {
+                script {
+                    bat "dotnet build \"${env.USER_SOL}\" -c ${env.CONFIGURATION} --no-restore"
+                }
+            }
+        }
+
+        stage('Build AuthorService') {
+            steps {
+                script {
+                    // If there’s an AuthorService.sln, use it. Otherwise:
+                    bat "dotnet build \"${env.AUTHOR_PROJ}\" -c ${env.CONFIGURATION} --no-restore"
+                }
+            }
+        }
+
+        stage('Build BookService') {
+            steps {
+                script {
+                    // If there’s a BookService.sln, use it. Otherwise:
+                    bat "dotnet build \"${env.BOOK_PROJ}\" -c ${env.CONFIGURATION} --no-restore"
+                }
+            }
+        }
+
+        stage('Build FrontEnd') {
+            steps {
+                script {
+                    bat "dotnet build \"${env.FRONTEND_PROJ}\" -c ${env.CONFIGATION} --no-restore"
+                }
+            }
+        }
+
+        stage('Test UserService') {
+            steps {
+                script {
+                    // If your UserService solution contains tests, adjust accordingly.
+                    // If not, skip this stage or mark it “unstable.”
+                    bat "dotnet test \"${env.USER_SOL}\" -c ${env.CONFIGURATION} --no-build --logger trx"
                 }
             }
             post {
                 always {
-                    // Archive test results (if any .trx or XML files appear under TestResults)
-                    junit '**/TestResults/*.trx'
+                    junit 'Services/UserServices/TestResults/*.trx'
                 }
             }
         }
 
-        stage('Publish Services & Frontend') {
+        // You can add similar Test stages for AuthorService or BookService if they have tests.
+
+        stage('Publish Services & FrontEnd') {
             steps {
                 script {
-                    // Create a 'publish' directory
                     bat 'if not exist publish mkdir publish'
 
                     // Publish UserService
-                    bat "dotnet publish \"Services\\UserServices\\UserServices.csproj\" -c ${env.CONFIGURATION} -o publish/UserService --no-build"
+                    bat "dotnet publish \"${env.USER_SOL}\" -c ${env.CONFIGURATION} -o publish/UserService --no-build"
 
                     // Publish AuthorService
-                    bat "dotnet publish \"Services\\AuthorService\\AuthorService.csproj\" -c ${env.CONFIGURATION} -o publish/AuthorService --no-build"
+                    bat "dotnet publish \"${env.AUTHOR_PROJ}\" -c ${env.CONFIGURATION} -o publish/AuthorService --no-build"
 
                     // Publish BookService
-                    bat "dotnet publish \"Services\\BookService\\BookService.csproj\" -c ${env.CONFIGURATION} -o publish/BookService --no-build"
+                    bat "dotnet publish \"${env.BOOK_PROJ}\" -c ${env.CONFIGURATION} -o publish/BookService --no-build"
 
                     // Publish FrontEnd
-                    bat "dotnet publish \"FrontEnd\\FrontEnd.csproj\" -c ${env.CONFIGURATION} -o publish/FrontEnd --no-build"
+                    bat "dotnet publish \"${env.FRONTEND_PROJ}\" -c ${env.CONFIGURATION} -o publish/FrontEnd --no-build"
                 }
             }
         }
@@ -79,14 +140,13 @@ pipeline {
 
     post {
         always {
-            // Archive everything under publish/** so it’s available as a build artifact
             archiveArtifacts artifacts: 'publish/**/*', fingerprint: true
         }
         success {
-            echo 'Build succeeded 🎉'
+            echo 'Build + Publish succeeded 🎉'
         }
         unstable {
-            echo 'Build succeeded but test failures (unstable) ⚠️'
+            echo 'Build succeeded but some tests may have failed (unstable) ⚠️'
         }
         failure {
             echo 'Build failed 💥'
