@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Library.Frontend.Models.BookViewModel>?
+
+<h2>Books</h2>
+<p>
+    <a asp-action="Create" class="btn btn-success">New Book</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Author ID</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var list = Model ?? Enumerable.Empty<Library.Frontend.Models.BookViewModel>();
+        }
+        @foreach (var b in list)
+        {
+            <tr>
+                <td>@b.Id</td>
+                <td>@b.Title</td>
+                <td>@b.ISBN</td>
+                <td>@b.AuthorId</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@b.Id" class="btn btn-sm btn-primary me-1">
+                        Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@b.Id" class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+        @if (!list.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center">No books found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

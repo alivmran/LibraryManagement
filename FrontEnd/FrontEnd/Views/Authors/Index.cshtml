@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Library.Frontend.Models.AuthorViewModel>
+
+<h2>Authors</h2>
+<p>
+    <a asp-action="Create" class="btn btn-success">
+        New Author
+    </a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Any() ?? false)
+        {
+            foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Id</td>
+                    <td>@a.Name</td>
+                    <td class="text-end">
+                        <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-primary me-1">
+                            Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@a.Id" class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">No authors found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

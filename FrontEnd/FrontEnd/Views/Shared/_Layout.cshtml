@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Library</title>
+
+    <!-- 1) Local Bootstrap CSS (correct, direct path) -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- 2) Your site’s own CSS (optional) -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/FrontEnd.styles.css"
+          asp-append-version="true" />
+
+    <!-- 3) Inline styles to give a light-gray page background and white “card” for content -->
+    <style>
+        /* Light gray page background */
+        body {
+            background-color: #f0f2f5;
+        }
+
+        /* White “card” container around page content */
+        .content-wrapper {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- 4) Bootstrap Navbar (dark‐blue) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand"
+               asp-controller="Home"
+               asp-action="Index">
+                Library
+            </a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Home
+                        </a>
+                    </li>
+
+                    @{
+                        // Check if user is logged in (by checking for a JWT token in Session)
+                        var token = Context.Session.GetString("JWToken");
+                        bool isAuth = !string.IsNullOrEmpty(token);
+                    }
+
+                    @if (!isAuth)
+                    {
+                        <!-- Not authenticated: show Log In and Register -->
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active" : "")"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Log In
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" &&
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "Register"
+                                     ? "active" : "")"
+                               asp-controller="Users"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <!-- Authenticated: show Authors / Books / Users / Log Out -->
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Authors" ? "active" : "")"
+                               asp-controller="Authors"
+                               asp-action="Index">
+                                Authors
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Books" ? "active" : "")"
+                               asp-controller="Books"
+                               asp-action="Index">
+                                Books
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" &&
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "Index"
+                                     ? "active" : "")"
+                               asp-controller="Users"
+                               asp-action="Index">
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Account"
+                               asp-action="Logout">
+                                Log Out
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 5) White “content-wrapper” around each View’s body -->
+    <div class="container">
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- 6) Footer (light-gray background) -->
+    <footer class="bg-light text-center py-3">
+        <div class="container">
+            &copy; 2025 – Library Management
+        </div>
+    </footer>
+
+    <!-- 7) Local Bootstrap JS (correct direct path) -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 8) Your site JS (if any) -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
