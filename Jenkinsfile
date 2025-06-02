@@ -12,7 +12,7 @@ pipeline {
         CONFIGURATION = 'Release'
 
         // Path to your Postman collection (note the space in the filename)
-        POSTMAN_COLL  = 'Tests/Postman/LibraryManagement APIs.postman_test_run.json'
+        POSTMAN_COLL  = 'Tests/LibraryManagement APIs.postman_test_run.json'
     }
 
     stages {
