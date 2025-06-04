@@ -1,0 +1,300 @@
+Started by user Ali Imran
+Obtained Jenkinsfile from git https://github.com/alivmran/LibraryManagement.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git.exe rev-parse --resolve-git-dir C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/alivmran/LibraryManagement.git # timeout=10
+Fetching upstream changes from https://github.com/alivmran/LibraryManagement.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.49.0.windows.1'
+ > git.exe fetch --tags --force --progress -- https://github.com/alivmran/LibraryManagement.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/main^{commit}" # timeout=10
+Checking out Revision 3b06a3e3c53944f53109babdf5888142563eb2ab (refs/remotes/origin/main)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 3b06a3e3c53944f53109babdf5888142563eb2ab # timeout=10
+Commit message: "Fixed timeout"
+ > git.exe rev-list --no-walk 3b06a3e3c53944f53109babdf5888142563eb2ab # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Tool Install)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git.exe rev-parse --resolve-git-dir C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/alivmran/LibraryManagement.git # timeout=10
+Fetching upstream changes from https://github.com/alivmran/LibraryManagement.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.49.0.windows.1'
+ > git.exe fetch --tags --force --progress -- https://github.com/alivmran/LibraryManagement.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/main^{commit}" # timeout=10
+Checking out Revision 3b06a3e3c53944f53109babdf5888142563eb2ab (refs/remotes/origin/main)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 3b06a3e3c53944f53109babdf5888142563eb2ab # timeout=10
+Commit message: "Fixed timeout"
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Restore All Projects)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet restore Services/UserServices/UserServices/UserServices.csproj 
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet restore Services/AuthorService/AuthorService.csproj 
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet restore Services/BookService/BookService.csproj 
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet restore FrontEnd/FrontEnd/FrontEnd.csproj 
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build All Projects)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet build Services/UserServices/UserServices/UserServices.csproj -c Release --no-restore 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  UserServices -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Services\UserServices\UserServices\bin\Release\net8.0\UserServices.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.17
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet build Services/AuthorService/AuthorService.csproj -c Release --no-restore 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  AuthorService -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Services\AuthorService\bin\Release\net8.0\AuthorService.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.28
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet build Services/BookService/BookService.csproj -c Release --no-restore 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  BookService -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Services\BookService\bin\Release\net8.0\BookService.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.13
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet build FrontEnd/FrontEnd/FrontEnd.csproj -c Release --no-restore 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  FrontEnd -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\FrontEnd\FrontEnd\bin\Release\net8.0\FrontEnd.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.17
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish Services & FrontEnd)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>if not exist publish mkdir publish 
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet publish Services/UserServices/UserServices/UserServices.csproj -c Release -o publish/UserService --no-build 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  UserServices -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\publish\UserService\
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet publish Services/AuthorService/AuthorService.csproj -c Release -o publish/AuthorService --no-build 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  AuthorService -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\publish\AuthorService\
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet publish Services/BookService/BookService.csproj -c Release -o publish/BookService --no-build 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  BookService -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\publish\BookService\
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>dotnet publish FrontEnd/FrontEnd/FrontEnd.csproj -c Release -o publish/FrontEnd --no-build 
+MSBuild version 17.8.3+195e7f5a3 for .NET
+  FrontEnd -> C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\publish\FrontEnd\
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Start Microservices (Background))
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>if not exist logs mkdir logs 
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>start /B dotnet run --project Services/UserServices/UserServices/UserServices.csproj -c Release  1>"C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\logs\UserService.log" 2>&1 
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>start /B dotnet run --project Services/AuthorService/AuthorService.csproj -c Release  1>"C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\logs\AuthorService.log" 2>&1 
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>start /B dotnet run --project Services/BookService/BookService.csproj -c Release  1>"C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\logs\BookService.log" 2>&1 
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>start /B dotnet run --project FrontEnd/FrontEnd/FrontEnd.csproj -c Release  1>"C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\logs\FrontEnd.log" 2>&1 
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Wait for Services to Spin Up)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline>ping 127.0.0.1 -n 11  1>nul 
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run API Tests (Playwright))
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] dir
+Running in C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Playwright
+[Pipeline] {
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Playwright>npm install 
+
+up to date, audited 4 packages in 776ms
+
+found 0 vulnerabilities
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\LibraryManagement-Pipeline\Playwright>npm run test 
+
+> playwright@1.0.0 test
+> npx playwright test
+
+
+Running 12 tests using 4 workers
+(node:21424) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17564) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17988) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21412) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Raw Response: {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNSIsImVtYWlsIjoic3llZC5hbGkuaW1yYW4yMDA1QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiQWxpIiwiZXhwIjoxNzQ5MDY2MjQ0LCJpc3MiOiJMaWJyYXJ5QXV0aFNlcnZlciIsImF1ZCI6IkxpYnJhcnlBcGlDbGllbnRzIn0.NebbFcVJ6eWlmD8PDrjahyNxauZqy4YFGWqpjjo_1oA"}
+Parsed Body: {
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNSIsImVtYWlsIjoic3llZC5hbGkuaW1yYW4yMDA1QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiQWxpIiwiZXhwIjoxNzQ5MDY2MjQ0LCJpc3MiOiJMaWJyYXJ5QXV0aFNlcnZlciIsImF1ZCI6IkxpYnJhcnlBcGlDbGllbnRzIn0.NebbFcVJ6eWlmD8PDrjahyNxauZqy4YFGWqpjjo_1oA'
+}
+·POST /users response: {
+  id: 23,
+  username: 'alice1749062644656',
+  email: 'alice1749062644656@example.com',
+  passwordHash: 'P@ssw0rd!'
+}
+··PUT /users response: 
+··POST /authors response: { id: 25, name: 'J. K. Rowling' }
+··POST /books response: {
+  id: 14,
+  title: 'HP Philosopher’s Stone',
+  isbn: '9780747532699',
+  authorId: 24
+}
+·····
+  12 passed (2.0s)
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] archiveArtifacts
+Archiving artifacts
+‘Playwright/playwright-report/**/*.html’ doesn’t match anything, but ‘**/*.html’ does. Perhaps that’s what you mean?
+No artifacts found that match the file pattern "Playwright/playwright-report/**/*.html". Configuration error?
+[Pipeline] echo
+✅ Build + Publish + API tests all succeeded!
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
